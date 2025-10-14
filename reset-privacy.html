@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重置隐私政策状态</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .info-box {
+            background: #f5f7fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .value {
+            color: #666;
+            font-size: 14px;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-all;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status.yes {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.no {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            outline: none;
+        }
+        
+        .btn-reset {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-check {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-check:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-open {
+            background: #2ecc71;
+            color: white;
+            width: 100%;
+            margin-top: 12px;
+        }
+        
+        .btn-open:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .tips {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .tips-title {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tips-content {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .success-message,
+        .error-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .show {
+            display: block !important;
+        }
+        
+        .icon {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ 隐私政策状态管理</h1>
+        <p class="subtitle">频道应用 - 开发者工具</p>
+        
+        <div class="info-box">
+            <div class="info-item">
+                <span class="label">当前状态</span>
+                <span class="value">
+                    <span id="statusBadge" class="status">检查中...</span>
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="label">同意时间</span>
+                <span class="value" id="acceptTime">-</span>
+            </div>
+            <div class="info-item">
+                <span class="label">存储位置</span>
+                <span class="value">localStorage</span>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-check" onclick="checkStatus()">
+                <span class="icon">🔍</span> 检查状态
+            </button>
+            <button class="btn-reset" onclick="resetStatus()">
+                <span class="icon">🔄</span> 重置状态
+            </button>
+        </div>
+        
+        <button class="btn-open" onclick="openApp()">
+            <span class="icon">🚀</span> 打开应用测试
+        </button>
+        
+        <div id="successMessage" class="success-message">
+            ✅ 隐私政策状态已重置！请刷新应用查看弹窗。
+        </div>
+        
+        <div id="errorMessage" class="error-message">
+            ❌ 操作失败，请检查浏览器控制台。
+        </div>
+        
+        <div class="tips">
+            <div class="tips-title">
+                <span class="icon">💡</span>
+                <span>使用说明</span>
+            </div>
+            <div class="tips-content">
+                1. 点击"检查状态"查看当前隐私政策同意状态<br>
+                2. 点击"重置状态"清除同意记录（用于测试首次启动）<br>
+                3. 点击"打开应用测试"在新标签页打开应用<br>
+                4. 重置后需要刷新应用才能看到隐私政策弹窗
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 页面加载时自动检查状态
+        window.addEventListener('load', () => {
+            checkStatus();
+        });
+        
+        // 检查隐私政策状态
+        function checkStatus() {
+            try {
+                const accepted = localStorage.getItem('privacyAccepted');
+                const acceptedTime = localStorage.getItem('privacyAcceptedTime');
+                
+                const statusBadge = document.getElementById('statusBadge');
+                const acceptTimeEl = document.getElementById('acceptTime');
+                
+                if (accepted === 'true') {
+                    statusBadge.textContent = '已同意';
+                    statusBadge.className = 'status yes';
+                    
+                    if (acceptedTime) {
+                        const date = new Date(acceptedTime);
+                        acceptTimeEl.textContent = date.toLocaleString('zh-CN', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        });
+                    } else {
+                        acceptTimeEl.textContent = '未记录';
+                    }
+                } else {
+                    statusBadge.textContent = '未同意';
+                    statusBadge.className = 'status no';
+                    acceptTimeEl.textContent = '-';
+                }
+                
+                console.log('隐私政策状态:', {
+                    已同意: accepted === 'true',
+                    同意时间: acceptedTime
+                });
+            } catch (error) {
+                console.error('检查状态失败:', error);
+                showError();
+            }
+        }
+        
+        // 重置隐私政策状态
+        function resetStatus() {
+            try {
+                localStorage.removeItem('privacyAccepted');
+                localStorage.removeItem('privacyAcceptedTime');
+                
+                console.log('✅ 隐私政策状态已重置');
+                
+                // 更新显示
+                checkStatus();
+                
+                // 显示成功消息
+                showSuccess();
+            } catch (error) {
+                console.error('重置状态失败:', error);
+                showError();
+            }
+        }
+        
+        // 打开应用
+        function openApp() {
+            window.open('http://localhost:8081', '_blank');
+        }
+        
+        // 显示成功消息
+        function showSuccess() {
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            errorMsg.classList.remove('show');
+            successMsg.classList.add('show');
+            
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 显示错误消息
+        function showError() {
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            successMsg.classList.remove('show');
+            errorMsg.classList.add('show');
+            
+            setTimeout(() => {
+                errorMsg.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 快捷键支持
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + R: 重置状态
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                resetStatus();
+            }
+            // Ctrl/Cmd + K: 检查状态
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                checkStatus();
+            }
+            // Ctrl/Cmd + O: 打开应用
+            if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
+                e.preventDefault();
+                openApp();
+            }
+        });
+    </script>
+</body>
+</html>
