@@ -18,8 +18,10 @@ const firebaseConfig = {
 };
 
 // 🔍 检查Firebase是否已配置
-export const isFirebaseConfigured = firebaseConfig.apiKey !== "your-api-key" && 
-                                     firebaseConfig.projectId !== "your-project-id";
+export const isFirebaseConfigured = firebaseConfig.apiKey && 
+                                     firebaseConfig.projectId && 
+                                     firebaseConfig.apiKey.length > 10 && 
+                                     firebaseConfig.projectId.length > 5;
 
 let app = null;
 let auth = null;
