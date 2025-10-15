@@ -34,7 +34,7 @@ jobs:
       - name: 🚀 Setup Expo CLI
         run: |
           npm install -g eas-cli
-          echo "$EXPO_TOKEN" | eas login --token-stdin
+          eas login --token $EXPO_TOKEN
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
