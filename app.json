@@ -31,7 +31,8 @@
           "photosPermission": "此应用需要访问相册来选择头像和发送图片",
           "cameraPermission": "此应用需要访问相机来拍摄照片"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "ios": {
       "supportsTablet": true,
@@ -64,11 +65,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "owner": "qq27123",
     "extra": {
       "eas": {
-        "projectId": "f9b4d72e-2199-4b81-b041-fd8e6421d2ed"
+        "projectId": "3da2acee-26a9-46bc-9f0f-4fc4e2e1e964"
       }
-    },
-    "owner": "qq27122"
+    }
   }
 }

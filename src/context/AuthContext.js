@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
+import * as Network from 'expo-network'; // 使用Expo网络模块
 import { AuthService, DatabaseService, FirebaseHelper } from '../services/firebaseService';
 import { isFirebaseConfigured } from '../config/firebase';
 
@@ -75,11 +76,22 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     initializeAuth();
     
+    // 定期检查网络连接状态
+    const networkCheckInterval = setInterval(async () => {
+      try {
+        const networkState = await Network.getNetworkStateAsync();
+        setIsOnline(networkState.isConnected);
+      } catch (error) {
+        console.log('⚠️ 网络状态检查失败:', error.message);
+      }
+    }, 5000); // 每5秒检查一次
+    
     // 清理函数
     return () => {
       if (authUnsubscribe) {
         authUnsubscribe();
       }
+      clearInterval(networkCheckInterval);
     };
   }, []);
 
@@ -97,7 +109,32 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       
+      // 检查网络连接
+      try {
+        const networkState = await Network.getNetworkStateAsync();
+        if (!networkState.isConnected) {
+          console.warn('⚠️ 无网络连接，使用本地存储模式');
+          await checkLocalAuthState();
+          setLoading(false);
+          return;
+        }
+      } catch (networkError) {
+        console.warn('⚠️ 网络状态检查失败，使用本地存储模式:', networkError.message);
+        await checkLocalAuthState();
+        setLoading(false);
+        return;
+      }
+      
       console.log('🔥 初始化Firebase认证系统...');
+      
+      // 检查是否有初始化错误
+      if (typeof window !== 'undefined' && window.firebaseInitializationError) {
+        console.error('❗ Firebase初始化时出现错误:', window.firebaseInitializationError);
+        console.warn('⚠️ 将使用本地存储模式');
+        await checkLocalAuthState();
+        setLoading(false);
+        return;
+      }
       
       // 1. 检查是否需要数据迁移
       await checkAndMigrateData();

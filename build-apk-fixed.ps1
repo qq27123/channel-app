@@ -1,4 +1,4 @@
-# Android APK构建脚本
+# Android APK构建脚本 (修复版)
 Write-Host "========================================" -ForegroundColor Green
 Write-Host " Android应用发布版本构建脚本" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Green
@@ -28,6 +28,7 @@ Write-Host ""
 
 Write-Host "[3/5] 构建Android发布版APK..." -ForegroundColor Yellow
 Set-Location -Path "android"
+$env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-11.0.25.9-hotspot"
 .\gradlew.bat assembleRelease
 if ($LASTEXITCODE -ne 0) {
     Write-Host "错误: 构建失败" -ForegroundColor Red
