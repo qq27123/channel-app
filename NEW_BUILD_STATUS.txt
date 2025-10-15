@@ -1,0 +1,31 @@
+========================================
+        新的EAS BUILD 状态信息
+========================================
+
+构建已成功启动！
+
+构建ID: 9b3c31d0-8995-4990-99ae-750b65c249cc
+构建状态: Build queued... (正在排队)
+构建类型: Android APK (preview profile)
+平台: Android
+分发: internal
+
+查看详细日志:
+https://expo.dev/accounts/qq27123/projects/channel-app/builds/9b3c31d0-8995-4990-99ae-750b65c249cc
+
+修复的问题:
+1. 修复了Firebase配置文件导入路径问题
+   - 原问题: import { firebaseConfig } from '../../firebase-config'
+   - 修复后: import { firebaseConfig } from '../../firebase-config.js'
+
+构建进度:
+- 项目文件已上传到EAS Build
+- 正在云端队列中等待处理
+- 预计构建时间: 15-30分钟
+
+构建完成后下载APK:
+eas build:download
+
+提示:
+- 你可以随时使用 "eas build:list" 查看所有构建状态
+- 这次修复了Firebase配置导入路径问题，应该能成功构建

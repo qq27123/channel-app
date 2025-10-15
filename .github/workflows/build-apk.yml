@@ -1,0 +1,86 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📚 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: |
+          npm ci
+
+      - name: 🚀 Setup Expo CLI
+        run: |
+          npm install -g eas-cli
+          echo "${{ secrets.EXPO_TOKEN }}" | eas login --token-stdin
+
+      - name: ⚙️ Configure environment
+        run: |
+          echo "EXPO_NO_GIT_STATUS=1" >> $GITHUB_ENV
+          echo "EAS_NO_VCS=1" >> $GITHUB_ENV
+
+      - name: 🏗️ Prebuild Android project
+        run: |
+          npx expo prebuild --platform android --clean
+
+      - name: 🔧 Fix Firebase config import path
+        run: |
+          # 确保Firebase配置文件导入路径正确
+          sed -i 's/import { firebaseConfig, isFirebaseConfigured as isConfigured } from ..\/..\/firebase-config;/import { firebaseConfig, isFirebaseConfigured as isConfigured } from "..\/..\/firebase-config.js";/g' src/config/firebase.js
+
+      - name: 🛠️ Build APK with EAS
+        id: build_apk
+        run: |
+          eas build --platform android --profile preview --non-interactive --wait
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📥 Download build artifacts
+        run: |
+          eas build:download --output ./build/
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📤 Upload APK as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-apk-${{ github.sha }}
+          path: ./build/*.apk
+          if-no-files-found: warn
+
+      - name: 📝 Create build summary
+        if: success()
+        run: |
+          echo "## 🎉 Build Successful" >> $GITHUB_STEP_SUMMARY
+          echo "APK has been built and uploaded as an artifact." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Build Details" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Build Time: $(date)" >> $GITHUB_STEP_SUMMARY
+
+      - name: ❌ Create failure summary
+        if: failure()
+        run: |
+          echo "## ❌ Build Failed" >> $GITHUB_STEP_SUMMARY
+          echo "The APK build process failed. Please check the logs above for details." >> $GITHUB_STEP_SUMMARY
