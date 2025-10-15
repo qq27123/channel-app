@@ -1,0 +1,26 @@
+========================================
+        EAS BUILD 状态信息
+========================================
+
+构建已成功启动！
+
+构建ID: ae71442b-4c81-4cab-b853-84378a5a0439
+构建状态: Build queued...
+构建类型: Android APK (preview profile)
+平台: Android
+分发: internal
+
+查看详细日志:
+https://expo.dev/accounts/qq27123/projects/channel-app/builds/ae71442b-4c81-4cab-b853-84378a5a0439
+
+构建进度:
+- 项目文件已上传到EAS Build
+- 正在云端队列中等待处理
+- 预计构建时间: 15-30分钟
+
+构建完成后下载APK:
+eas build:download
+
+提示:
+- 你可以随时使用 "eas build:list" 查看所有构建状态
+- 构建完成后会生成可下载的APK文件

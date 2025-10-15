@@ -4,7 +4,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import Constants from 'expo-constants';
 // 导入新的Firebase配置文件
-import { firebaseConfig, isFirebaseConfigured as isConfigured } from '../../firebase-config';
+import { firebaseConfig, isFirebaseConfigured as isConfigured } from '../../firebase-config.js';
 
 // 🔥 Firebase项目配置
 // ⚠️ 请替换为你的实际配置信息
