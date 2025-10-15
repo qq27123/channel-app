@@ -50,13 +50,13 @@ jobs:
       - name: 🛠️ Build APK with EAS
         id: build_apk
         run: |
-          eas build --platform android --profile preview --non-interactive --wait
+          EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} eas build --platform android --profile preview --non-interactive --wait
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: 📥 Download build artifacts
         run: |
-          eas build:download --output ./build/
+          EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} eas build:download --output ./build/
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
